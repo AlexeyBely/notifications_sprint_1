@@ -1,0 +1,58 @@
+@startuml as_is
+title Notification service
+
+skinparam componentStyle uml2
+actor Users
+actor Admin
+node "nginx" as nginx
+node "fastapi" as fastapi
+node "auth" as auth
+node "ugc" as ugc
+package "Notification" {
+    node "Admin-notify Django" as django{
+        component "Admin views" as admin_views
+        component "Django ORM" as admin_orm            
+    }
+    database "notify Postgresql" as postgre {    
+        component "Tabels: \n user\n groop\n user_groop\n" as admin_tables
+    }
+    node "notify-api" as notify_api{
+        component "API" as api
+        component "CRUD user notify" as crud_admin 
+        component "Filling messege" as fill_messege
+        component "Celery tasks" as celery_tasks                  
+    }
+    node "celery-beat" as admin_celery
+    node "RabbitMQ" as rabbit
+    node "celery-workers" as workers
+    node "Redis" as redis
+    node "Flower" as flower
+}
+cloud "Email SendGrid"  as sendgrid
+cloud "Other messaging services"  as other_services
+     
+Users -left- nginx
+Admin -right- nginx
+nginx <-down--> django : admin scheduler
+nginx <-down--> flower : task execution\n monitoring
+nginx <-down--> notify_api : add/modify user notify,\n setting load regulation
+
+admin_orm <--> admin_tables 
+admin_views --> rabbit  : scheduler tasks
+rabbit ---> admin_celery : scheduler tasks
+admin_celery --> api : send messages to a group of users
+admin_celery -up-> redis : result
+redis -up-> flower
+admin_views <-up- api  : message tags for form validation
+
+crud_admin <--> admin_tables
+fill_messege <-up- fastapi
+fill_messege <-up-auth
+fill_messege <-up- ugc
+celery_tasks --> rabbit : sending messages tasks
+rabbit ---> workers : sending messages tasks
+workers -up-> redis  : result
+workers --> sendgrid
+workers ..> other_services
+ 
+@enduml 
