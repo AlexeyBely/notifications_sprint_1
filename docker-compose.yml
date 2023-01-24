@@ -1,0 +1,51 @@
+version: '3.5'
+volumes:
+  static:
+    name: ${NOTIFY_STATIC}
+  media:
+    name: ${NOTIFY_MEDIA}
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    #depends_on:
+    #  - action
+    #  - logstash
+    volumes:
+      - ./deploy/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./deploy/nginx/site.conf:/etc/nginx/conf.d/site.conf:ro
+      - /tmp/logs/nginx/:/var/log/nginx/
+    ports:
+      - "80:80"
+      - "8000:80"
+    #links:
+    #  - logstash 
+
+  psql:
+    build:
+      context: ./deploy/psql
+      dockerfile: Dockerfile
+    image: postgres_notify:1.0
+    container_name: ${NOTIFY_POSTGRES_HOST}
+    environment:
+      POSTGRES_DB: "${NOTIFY_POSTGRES_DB}"
+      POSTGRES_USER: "${NOTIFY_POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${NOTIFY_POSTGRES_PASSWORD}"
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./deploy/psql/:/docker-entrypoint-initdb.d/
+
+  rabbitmq:
+    image: rabbitmq:latest
+    container_name: ${NOTIFY_RABBITMQ_HOST}  
+
+  redis:
+    image: redis:latest
+    container_name: ${NOTIFY_REDIS_HOST}
+
+networks:
+  default:
+    name: movies_networks  
+    external: true
