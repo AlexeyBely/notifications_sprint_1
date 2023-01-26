@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from split_settings.tools import include
 
-from components.environment import env_settings
+from config.components.env_setting import env_settings
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'scheduler.apps.SchedulerConfig',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -85,10 +86,10 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_URL = f'/{env_settings.static}/'
-STATIC_ROOT = os.path.join(BASE_DIR, env_settings.static)
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-MEDIA_URL = f'/{env_settings.media}/'
-MEDIA_ROOT = os.path.join(BASE_DIR, env_settings.media)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
