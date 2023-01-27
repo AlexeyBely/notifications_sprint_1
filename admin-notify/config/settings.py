@@ -59,6 +59,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 include(
     'components/database.py',
     'components/locate.py',
+    'components/celery_setting.py'
 )
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -78,13 +79,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru-RU'
 
-TIME_ZONE = 'UTC'
+USE_TZ = True
+TIME_ZONE = env_settings.admin_timezone
 
 USE_I18N = True
-
 USE_L10N = True
-
-USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")

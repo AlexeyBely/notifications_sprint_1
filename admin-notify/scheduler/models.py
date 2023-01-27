@@ -1,10 +1,10 @@
 import uuid
 import pytz
+import datetime
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django_celery_beat.models import (IntervalSchedule, CrontabSchedule, 
-                                       SolarSchedule, ClockedSchedule, PeriodicTask)
+from django_celery_beat.models import PeriodicTask
 
 
 MAX_LENGTH_NAME = 255
@@ -33,13 +33,13 @@ class NameMixin(models.Model):
         abstract = True
 
 
-class Groop(UUIDMixin, TimeStampedMixin, NameMixin):
+class Group(UUIDMixin, TimeStampedMixin, NameMixin):
     """Grouping users for sending messages."""
 
     class Meta:
-        db_table = 'notify\'.\'groop'
-        verbose_name = _('groop')
-        verbose_name_plural = _('groops')
+        db_table = 'notify\'.\'group'
+        verbose_name = _('group')
+        verbose_name_plural = _('groups')
 
     def __str__(self):
         return self.name
@@ -55,11 +55,13 @@ class User(TimeStampedMixin):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     timezone = models.CharField(max_length=32, choices=TIMEZONES, default='Europe/Moscow')
+    from_time = models.TimeField(default=datetime.time(9, 00))
+    befor_time = models.TimeField(default=datetime.time(20, 00))
     email_permission = models.BooleanField(default=False)
     browser_permission = models.BooleanField(default=False)
     push_permission = models.BooleanField(default=False)
     mobile_permission = models.BooleanField(default=False)
-    groops = models.ManyToManyField(Groop, through='GroopUser')
+    groups = models.ManyToManyField(Group, through='GroupUser')
 
     class Meta:
         db_table = 'notify\'.\'user'
@@ -76,7 +78,7 @@ class User(TimeStampedMixin):
         return str(self.id)
     
 
-class GroopUser(UUIDMixin):
+class GroupUser(UUIDMixin):
     """Matching group to user."""
 
     user = models.ForeignKey(
@@ -84,19 +86,19 @@ class GroopUser(UUIDMixin):
         on_delete=models.CASCADE,
         verbose_name=_('user')
     )
-    groop = models.ForeignKey(
-        Groop,
+    group = models.ForeignKey(
+        Group,
         on_delete=models.CASCADE,
-        verbose_name=_('groop')
+        verbose_name=_('group')
     )
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = 'notify\'.\'groop_user'
+        db_table = 'notify\'.\'group_user'
         constraints = [
             models.UniqueConstraint(
-                fields=['user_id', 'groop_id'],
-                name='user_groop_idx'
+                fields=['user_id', 'group_id'],
+                name='user_group_idx'
             ),
         ]
 
@@ -116,86 +118,30 @@ class Template(UUIDMixin, TimeStampedMixin, NameMixin):
         return self.name
 
 
-class GroopPeriodicTask(UUIDMixin, TimeStampedMixin, NameMixin):
+class GroupPeriodicTask(PeriodicTask, TimeStampedMixin, NameMixin):
     """Task for group messaging.
     
     Acts as an intermediate link between group mailing and 
     periodic tasks django_celery_beat.
     """
-    groop = models.ForeignKey(
-        Groop,
+    group = models.ForeignKey(
+        Group,
         on_delete=models.CASCADE,
-        verbose_name=_('Groop')
+        verbose_name=_('Group'),
+        blank=True, 
+        null=True,
     )
     template = models.ForeignKey(
         Template,
         on_delete=models.CASCADE,
         verbose_name=_('Template')
     )
-    # fields according to scheduler django_celery_beat
-    task = models.CharField(
-        max_length=200,
-        verbose_name=_('Task Name',),
-    )
-    one_off = models.BooleanField(
-        default=False,
-        verbose_name=_('One-off Task'),
-    )
-    start_time = models.DateTimeField(
-        blank=True, null=True,
-        verbose_name=_('Start Datetime'),
-    )
-    enabled = models.BooleanField(
-        default=True,
-        verbose_name=_('Enabled'),
-    )
-    interval = models.ForeignKey(
-        IntervalSchedule, on_delete=models.CASCADE,
-        null=True, blank=True, verbose_name=_('Interval Schedule'),
-    )
-    crontab = models.ForeignKey(
-        CrontabSchedule, on_delete=models.CASCADE, null=True, blank=True,
-        verbose_name=_('Crontab Schedule'),
-    )
-    solar = models.ForeignKey(
-        SolarSchedule, on_delete=models.CASCADE, null=True, blank=True,
-        verbose_name=_('Solar Schedule'),
-    )
-    clocked = models.ForeignKey(
-        ClockedSchedule, on_delete=models.CASCADE, null=True, blank=True,
-        verbose_name=_('Clocked Schedule'),
-    )
-    periodic_tasks = models.ManyToManyField(PeriodicTask, through='GroopInPeriodicTask')
-
+    
     class Meta:
-        db_table = 'notify\'.\'groop_periodic_task'
-        verbose_name = _('groop_periodic_task')
-        verbose_name_plural = _('groop_periodic_tasks')
+        db_table = 'notify\'.\'group_periodic_task'
+        verbose_name = _('group_periodic_task')
+        verbose_name_plural = _('group_periodic_tasks')
 
     def __str__(self):
         return self.name
-    
 
-class GroopInPeriodicTask(UUIDMixin):
-    """Matching group to user."""
-
-    periodic_task = models.ForeignKey(
-        PeriodicTask,
-        on_delete=models.CASCADE,
-        verbose_name=_('periodic_task')
-    )
-    groop_periodic_task = models.ForeignKey(
-        GroopPeriodicTask,
-        on_delete=models.CASCADE,
-        verbose_name=_('groop_periodic_task')
-    )
-    created = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        db_table = 'notify\'.\'groop_in_periodic_task'
-        constraints = [
-            models.UniqueConstraint(
-                fields=['periodic_task_id', 'groop_periodic_task_id'],
-                name='groop_in_periodic_task_idx'
-            ),
-        ]

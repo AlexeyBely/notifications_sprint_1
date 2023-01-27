@@ -1,12 +1,18 @@
-from django.contrib import admin
+import json
+
+from django_celery_beat.admin import PeriodicTaskAdmin
+from scheduler.models import GroupPeriodicTask
 
 
-class GroopTaskModelAdmin(admin.ModelAdmin):
-    
-    #def __init__(self):
-    #    super().__init__()
+class GroupTaskModelAdmin(PeriodicTaskAdmin):
 
-    def save_model(self, request, obj, form, change):
-        print(f'type model: {type(self.model)}')
-        print(f'type model: {type(obj)}')
+    def save_model(self, request, obj: GroupPeriodicTask, form, change):
+        """Add to arguments calery template and group"""
+
+        arguments = {
+            'template': str(obj.template),
+            'group': str(obj.group) if obj.group is not None else None,
+            'name_task': obj.name
+        }
+        obj.kwargs = json.dumps(arguments)        
         obj.save()

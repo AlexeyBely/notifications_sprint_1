@@ -1,4 +1,4 @@
-from pydantic import BaseSettings, Field
+from pydantic import BaseSettings, Field, root_validator
 
 
 class EnvSettings(BaseSettings):
@@ -11,6 +11,22 @@ class EnvSettings(BaseSettings):
     psql_password: str = Field('123qwe', env='notify_postgres_password')
     psql_port: int = Field(5432, env='notify_postgres_port')
     psql_host: str = Field('127.0.0.1', env='notify_postgres_host')
+    admin_timezone: str = 'Europe/Moscow'
+    scheduler_task_transport_timeout: int = 3600
+    scheduler_broker_redis_host: str = '127.0.0.1'
+    scheduler_broker_redis_port: int = 6379
+    scheduler_broker: str | None = None
+    schedule_delay_min: int = 1
+    notify_api_port: int = 8001
+    notify_api_host: int = '127.0.0.1'
+
+    @root_validator
+    def compute_service_url(cls, values):
+        if values.get('scheduler_broker', None) is None:
+            port = values['scheduler_broker_redis_port']
+            host = values['scheduler_broker_redis_host']
+            values['scheduler_broker'] = f'redis://{host}:{port}/0'
+        return values    
 
 
 env_settings = EnvSettings()

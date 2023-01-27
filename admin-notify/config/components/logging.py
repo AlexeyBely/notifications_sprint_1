@@ -1,6 +1,10 @@
 import logging
+from logging import config as logging_config
+
+
 logger = logging.getLogger('django.db.backends')
 log_hook = logging.getLogger('django_hook')
+
 
 LOGGING = {
     'version': 1,
@@ -12,7 +16,7 @@ LOGGING = {
     },
     'formatters': {
         'verbose': {
-            'format': '[%(asctime)s: %(levelname)s] %(message)s <%(module)s>'
+            'format': 'DJANDO_HOOK [%(module)s: %(levelname)s] %(message)s'
         }
     },
     'handlers': {
@@ -37,3 +41,6 @@ LOGGING = {
         },
     }
 }
+
+
+logging_config.dictConfig(LOGGING)
