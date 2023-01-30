@@ -18,7 +18,7 @@ class EnvSettings(BaseSettings):
     scheduler_broker: str | None = None
     schedule_delay_min: int = 1
     notify_api_port: int = 8001
-    notify_api_host: int = '127.0.0.1'
+    notify_api_host: str = '127.0.0.1'
 
     @root_validator
     def compute_service_url(cls, values):

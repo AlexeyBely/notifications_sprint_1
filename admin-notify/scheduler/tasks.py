@@ -6,16 +6,10 @@ from config.celery import app as celery_app
 from scheduler.users import (sorting_users_for_timezones, 
                              sorting_delayed_users_for_timezones)
 from config.components.env_setting import env_settings
+from scheduler.notify_service import get_notify_service
 
 
 logger = logging.getLogger(__name__)
-
-
-def send_user_ids_to_api_notify(template: str, user_ids: list) -> bool:
-    """Sends a template and users ID to the notification service."""
-
-    logger.info(f'{len(user_ids)} users were sent to the notification service')
-    logger.info(f'<sending_user_ids>  {template}: {user_ids}')
 
 
 def create_task_delayed_send(name_task: str, template: str, user_ids: list) -> None:
@@ -48,7 +42,8 @@ def user_ids_to_notify_service(
     """Sending to the notification service and delayed task."""
 
     if len(sending_ids) > 0:
-        send_user_ids_to_api_notify(tamplate, sending_ids)
+        notify_service = get_notify_service()
+        notify_service.send_user_ids_to_notify(tamplate, sending_ids)
     if len(not_sending_ids) > 0:
         create_task_delayed_send(name_task, tamplate, not_sending_ids)
     else:

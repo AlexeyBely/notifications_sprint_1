@@ -106,8 +106,8 @@ class GroupUser(UUIDMixin):
 class Template(UUIDMixin, TimeStampedMixin, NameMixin):
     """Location and name of the template for sending messages."""
 
-    file_path = models.FileField(_('file'), blank=True, null=True, upload_to='template/')
-    file_name = models.CharField(_('file_name'), max_length=MAX_LENGTH_NAME)
+    file_path = models.FileField(_('file'), null=True, upload_to='template/')
+    image_url = models.TextField(_('image_url'), blank=True, null=True)
 
     class Meta:
         db_table = 'notify\'.\'template'

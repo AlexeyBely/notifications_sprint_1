@@ -1,7 +1,5 @@
-from django.contrib import admin
-from django_celery_beat.admin import PeriodicTaskForm, PeriodicTaskAdmin
+from django.contrib import admin 
 from django.utils.translation import gettext_lazy as _
-from django import forms
 
 from scheduler.models import Group, GroupUser, User, Template, GroupPeriodicTask
 from scheduler.admin_hooks import GroupTaskModelAdmin
@@ -16,11 +14,11 @@ class GroupAdmin(admin.ModelAdmin):
 
 
 @admin.register(Template)
-class GroupAdmin(admin.ModelAdmin):
+class TemplateAdmin(admin.ModelAdmin):
     list_display = (
         'name',
         'description',
-        'file_name',
+        'file_path',
     )
 
 

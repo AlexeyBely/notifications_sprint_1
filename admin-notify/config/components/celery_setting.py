@@ -11,6 +11,6 @@ CELERY_BROKER_TRANSPORT_OPTIONS = {
     'visibility_timeout': env_settings.scheduler_task_transport_timeout
 }
 CELERY_RESULT_BACKEND = env_settings.scheduler_broker
-#CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
