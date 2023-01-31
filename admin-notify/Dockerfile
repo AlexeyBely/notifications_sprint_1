@@ -21,5 +21,3 @@ RUN groupadd -r web \
     && chown web:web -R /app
 
 EXPOSE $ADMIN_NOTIFY_PORT
-
-USER web

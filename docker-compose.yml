@@ -87,7 +87,7 @@ services:
       - ${SCHEDULER_BEAT_PORT}
     depends_on:
       - admin-notify
-      - scheduler
+      - scheduler-worker
 
   redis:
     image: redis:latest
