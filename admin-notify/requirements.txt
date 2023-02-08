@@ -10,3 +10,4 @@ celery==5.2.7
 celery[redis]==5.2.7
 Jinja2==3.1.2 
 Pillow==9.4.0 
+requests==2.28.2 

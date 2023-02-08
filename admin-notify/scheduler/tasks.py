@@ -12,6 +12,10 @@ from scheduler.notify_service import get_notify_service
 logger = logging.getLogger(__name__)
 
 
+class TaskFailure(Exception):
+   pass
+
+
 def create_task_delayed_send(name_task: str, template: str, user_ids: list) -> None:
     """Sends a template and users ID to delayed celery task."""
 
@@ -43,7 +47,11 @@ def user_ids_to_notify_service(
 
     if len(sending_ids) > 0:
         notify_service = get_notify_service()
-        notify_service.send_user_ids_to_notify(tamplate, sending_ids)
+        fault_send = notify_service.send_user_ids_to_notify(tamplate, sending_ids)
+        if fault_send is True:
+            raise TaskFailure(
+                f'Failure send task to notify api service {env_settings.notify_api_url}'
+            )    
     if len(not_sending_ids) > 0:
         create_task_delayed_send(name_task, tamplate, not_sending_ids)
     else:

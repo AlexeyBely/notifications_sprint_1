@@ -19,6 +19,8 @@ class EnvSettings(BaseSettings):
     schedule_delay_min: int = 1
     notify_api_port: int = 8001
     notify_api_host: str = '127.0.0.1'
+    notify_api_url: str | None = None
+    notify_api_timeout: int = 5
 
     @root_validator
     def compute_service_url(cls, values):
@@ -26,6 +28,10 @@ class EnvSettings(BaseSettings):
             port = values['scheduler_broker_redis_port']
             host = values['scheduler_broker_redis_host']
             values['scheduler_broker'] = f'redis://{host}:{port}/0'
+        if values.get('notify_api_url', None) is None:
+            port = values['notify_api_port']
+            host = values['notify_api_host']
+            values['notify_api_url'] = f'http://{host}:{port}/notify/api/v1/task/'
         return values    
 
 

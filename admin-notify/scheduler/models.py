@@ -53,7 +53,7 @@ class User(TimeStampedMixin):
     """
     TIMEZONES = tuple(zip(pytz.all_timezones, pytz.all_timezones))
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, editable=False)
     timezone = models.CharField(max_length=32, choices=TIMEZONES, default='Europe/Moscow')
     from_time = models.TimeField(default=datetime.time(9, 00))
     befor_time = models.TimeField(default=datetime.time(20, 00))
