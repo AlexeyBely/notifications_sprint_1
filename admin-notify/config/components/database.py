@@ -1,4 +1,4 @@
-from environment import env_settings
+from config.components.env_setting import env_settings
 
 
 DATABASES = {

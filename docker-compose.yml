@@ -1,26 +1,28 @@
 version: '3.5'
 volumes:
   static:
-    name: ${NOTIFY_STATIC}
+    name: notify_static
   media:
-    name: ${NOTIFY_MEDIA}
+    name: notify_media
+  scheduler_exchange:
+    name: notify_scheduler_exchange
+  
 
 services:
   nginx:
     image: nginx:latest
     container_name: nginx
-    #depends_on:
-    #  - action
-    #  - logstash
     volumes:
       - ./deploy/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./deploy/nginx/site.conf:/etc/nginx/conf.d/site.conf:ro
       - /tmp/logs/nginx/:/var/log/nginx/
+      - static:/app/static
+      - media:/app/media
     ports:
       - "80:80"
       - "8000:80"
-    #links:
-    #  - logstash 
+    depends_on:
+      - admin-notify
 
   psql:
     build:
@@ -37,13 +39,79 @@ services:
     volumes:
       - ./deploy/psql/:/docker-entrypoint-initdb.d/
 
+  admin-notify:
+    build:
+      context: ./admin-notify
+      dockerfile: Dockerfile
+    image: admin-notify:1.0
+    container_name: admin-notify
+    env_file:
+      - .env
+    volumes:
+      - static:/app/static
+      - media:/app/media
+      - scheduler_exchange:/app/scheduler
+    entrypoint: >
+      sh -c "python manage.py createcachetable &&
+             python manage.py collectstatic  --noinput &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:${ADMIN_NOTIFY_PORT}"
+    expose:
+      - ${ADMIN_NOTIFY_PORT}
+    depends_on:
+      - psql
+
+  scheduler-worker:
+    image: admin-notify:1.0
+    container_name: scheduler-worker
+    env_file:
+      - .env
+    volumes:
+      - scheduler_exchange:/app/scheduler
+    entrypoint: >
+      sh -c "celery -A config worker --loglevel=info"
+    expose:
+      - ${SCHEDULER_WORKER_PORT}
+    depends_on:
+      - admin-notify
+      
+  scheduler-beat:
+    image: admin-notify:1.0
+    container_name: scheduler-beat
+    env_file:
+      - .env
+    volumes:
+      - scheduler_exchange:/app/scheduler
+    entrypoint: >
+      sh -c "celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler"
+    expose:
+      - ${SCHEDULER_BEAT_PORT}
+    depends_on:
+      - admin-notify
+      - scheduler-worker
+
+  redis:
+    image: redis:latest
+    container_name: ${SCHEDULER_BROKER_REDIS_HOST}
+    ports:
+      - "6379:6379"
+
+  notify-api:
+    build: ./notify-api
+    container_name: notify-api
+    entrypoint: >
+      sh -c "uvicorn main:app --host 0.0.0.0 --port $NOTIFY_API_PORT"
+    expose:
+      - ${NOTIFY_API_PORT}
+    env_file:
+      - ./.env
+    depends_on:
+      - psql
+
   rabbitmq:
     image: rabbitmq:latest
     container_name: ${NOTIFY_RABBITMQ_HOST}  
 
-  redis:
-    image: redis:latest
-    container_name: ${NOTIFY_REDIS_HOST}
+
 
 networks:
   default:
