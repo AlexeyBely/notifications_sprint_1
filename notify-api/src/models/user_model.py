@@ -1,4 +1,3 @@
-import uuid
 import datetime
 from sqlalchemy import Boolean, Column, String, UUID, DateTime, Time
 

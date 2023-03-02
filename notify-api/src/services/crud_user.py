@@ -1,8 +1,7 @@
 from sqlalchemy.orm import Session
-from datetime import datetime
 
 from models import user_model, user_schema
-from sqlalchemy import Boolean, Column, String, UUID, DateTime, Time
+from sqlalchemy import UUID
 
 
 def get_model_user_from_schema(
