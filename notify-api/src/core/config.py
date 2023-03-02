@@ -16,8 +16,19 @@ class ApiSettings(BaseSettings):
     psql_host: str = Field('127.0.0.1', env='notify_postgres_host')
     access_token_secret_key: str = '256-bit-secret-key-1'
     token_algoritm: str = 'HS256'
-    default_page_size: int = 20
     max_page_size: int = 100
+    auth_users_url: str = 'http://127.0.0.1:5000/auth/users/'
+    auth_login_url: str = 'http://127.0.0.1:5000/auth/login/'
+    auth_login_email: str = 'superuser@ex.com'
+    auth_login_password: str = 'superUserSuperPassword'
+    api_films_url: str = 'http://127.0.0.1:9000/api/v1/films/'
+    rabbitmq_default_user: str
+    rabbitmq_default_pass: str
+    rabbitmq_default_vhost: str
+    notify_rabbitmq_host: str
+    notify_rabbitmq_port: int
+    sendgrid_api_key: str
+    notify_from_mail: str
 
 
 settings = ApiSettings()

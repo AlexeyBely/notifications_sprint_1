@@ -22,7 +22,7 @@ app.include_router(task.router, prefix='/notify/api/v1/task', tags=['task'])
 
 
 
-if __name__ == '__main__':
-    uvicorn.run(app, host='0.0.0.0', port=8999)
+#if __name__ == '__main__':
+#    uvicorn.run(app, host='0.0.0.0', port=8999)
 
 

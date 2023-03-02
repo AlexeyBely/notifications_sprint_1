@@ -1,8 +1,7 @@
 import uuid
 
 from http import HTTPStatus
-from fastapi import APIRouter, Depends, HTTPException, Body, status
-from fastapi.responses import Response
+from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
 
 from api.v1.auth import TokenData, authenticate

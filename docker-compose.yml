@@ -2,8 +2,8 @@ version: '3.5'
 volumes:
   static:
     name: notify_static
-  media:
-    name: notify_media
+  templates:
+    name: notify_templates
   scheduler_exchange:
     name: notify_scheduler_exchange
   
@@ -17,7 +17,7 @@ services:
       - ./deploy/nginx/site.conf:/etc/nginx/conf.d/site.conf:ro
       - /tmp/logs/nginx/:/var/log/nginx/
       - static:/app/static
-      - media:/app/media
+    #  - media:/app/media
     ports:
       - "80:80"
       - "8000:80"
@@ -49,7 +49,7 @@ services:
       - .env
     volumes:
       - static:/app/static
-      - media:/app/media
+      - templates:/app/media/template
       - scheduler_exchange:/app/scheduler
     entrypoint: >
       sh -c "python manage.py createcachetable &&
@@ -97,6 +97,7 @@ services:
 
   notify-api:
     build: ./notify-api
+    image: notify_api:1.0
     container_name: notify-api
     entrypoint: >
       sh -c "uvicorn main:app --host 0.0.0.0 --port $NOTIFY_API_PORT"
@@ -109,8 +110,26 @@ services:
 
   rabbitmq:
     image: rabbitmq:latest
-    container_name: ${NOTIFY_RABBITMQ_HOST}  
+    container_name: ${NOTIFY_RABBITMQ_HOST}
+    env_file:
+      - ./.env
+    ports:
+      - "5672:5672"
 
+  notify-worker:
+    image: notify_api:1.0
+    container_name: notify-worker
+    env_file:
+      - .env
+    volumes:
+      - templates:/app/src/templates
+    entrypoint: >
+      sh -c "celery -A app_celery worker --loglevel=info"
+    expose:
+      - ${NOTIFY_WORKER_PORT}
+    depends_on:
+      - rabbitmq
+      - notify-api
 
 
 networks:
