@@ -1,12 +1,12 @@
 import pytz
+
 from datetime import datetime
 
 from scheduler.models import User
 
 
 def check_send_to_user(user: User) -> bool:
-    """Checks the allowed time in user settings."""
-
+    """Checks the allowed time in user settings."""    
     tz_user = pytz.timezone(user.timezone)
     checking_time = datetime.now(tz_user).time()
     if (user.from_time <= checking_time) and (user.befor_time > checking_time):
@@ -51,6 +51,3 @@ def sorting_delayed_users_for_timezones(uses_ids: list) -> tuple:
         else:
             not_sending.append(user_id)
     return sending, not_sending
-
-
-

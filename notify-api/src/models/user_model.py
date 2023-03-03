@@ -4,7 +4,6 @@ from sqlalchemy import Boolean, Column, String, UUID, DateTime, Time
 from db.postgresql import Base
 
 
-
 class User(Base):
     __tablename__ = 'notify\'.\'user'
 

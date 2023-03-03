@@ -1,6 +1,5 @@
 from config.components.env_setting import env_settings
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -10,7 +9,7 @@ DATABASES = {
         'HOST': env_settings.psql_host,
         'PORT': env_settings.psql_port,
         'OPTIONS': {
-            'options': '-c search_path=public,content'
-        }
-    }
+            'options': '-c search_path=public,content',
+        },
+    },
 }

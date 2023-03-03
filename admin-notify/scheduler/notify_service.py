@@ -1,4 +1,5 @@
 import logging
+
 import requests
 
 from abc import ABC, abstractmethod
@@ -31,8 +32,8 @@ class ApiNotifyService(BaseNotifyService):
     def send_user_ids_to_notify(self, template: str, user_ids: list) -> bool:
         response = requests.post(
             env_settings.notify_api_url,
-            json = {'template': template, 'users': user_ids},
-            timeout = env_settings.notify_api_timeout   
+            json={'template': template, 'users': user_ids},
+            timeout=env_settings.notify_api_timeout   
         )
         if response.status_code is not requests.codes.ok:
             return True

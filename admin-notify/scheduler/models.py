@@ -47,14 +47,16 @@ class Group(UUIDMixin, TimeStampedMixin, NameMixin):
 
 class User(TimeStampedMixin):
     """Timezone and permissions for each user.
-    
+
     The model instances is not created or edited in the Admin Django.
     The user instances is created through the api notification service.
     """
+
     TIMEZONES = tuple(zip(pytz.all_timezones, pytz.all_timezones))
 
     id = models.UUIDField(primary_key=True, editable=False)
-    timezone = models.CharField(max_length=32, choices=TIMEZONES, default='Europe/Moscow')
+    timezone = models.CharField(max_length=32, choices=TIMEZONES,
+                                default='Europe/Moscow')
     from_time = models.TimeField(default=datetime.time(9, 00))
     befor_time = models.TimeField(default=datetime.time(20, 00))
     email_permission = models.BooleanField(default=False)
@@ -120,10 +122,11 @@ class Template(UUIDMixin, TimeStampedMixin, NameMixin):
 
 class GroupPeriodicTask(PeriodicTask, TimeStampedMixin, NameMixin):
     """Task for group messaging.
-    
+
     Acts as an intermediate link between group mailing and 
     periodic tasks django_celery_beat.
     """
+    
     group = models.ForeignKey(
         Group,
         on_delete=models.CASCADE,
@@ -144,4 +147,3 @@ class GroupPeriodicTask(PeriodicTask, TimeStampedMixin, NameMixin):
 
     def __str__(self):
         return self.name
-

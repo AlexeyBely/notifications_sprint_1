@@ -20,7 +20,7 @@ def get_model_user_from_schema(
 
 
 def create_user(db: Session, user_id: UUID, user: user_schema.UserBase):
-    db_user = user_model.User(id = user_id)
+    db_user = user_model.User(id=user_id)
     db_user = get_model_user_from_schema(db_user, user)
     db.add(db_user)
     db.commit()

@@ -42,14 +42,10 @@ async def add_task(
     info_users = await auth_service.read_info_users(users)
     if info_users is None:
         return    
-    for user_id in info_users:  #type: ignore
+    for user_id in info_users:  # type: ignore
         var_user = collect_user_variables(str(user_id), info_users)
         all_var = var_user | var_films
         db_user = crud_user.get_user(db, user_id)
         if db_user is not None:
             if db_user.email_permission is True:
                 send_email.delay(template, all_var)
-                
-
-    
-
