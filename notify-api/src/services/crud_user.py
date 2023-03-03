@@ -9,10 +9,10 @@ def get_model_user_from_schema(
     schema_user: user_schema.UserBase
 ) -> user_model.User:
 
-    model_user.timezone = schema_user.timezone  # OK
-    model_user.from_time = schema_user.from_time    # OK
-    model_user.befor_time = schema_user.befor_time  # OK
-    model_user.email_permission = schema_user.email_permission  # OK
+    model_user.timezone = schema_user.timezone  # type: ignore
+    model_user.from_time = schema_user.from_time    # type: ignore
+    model_user.befor_time = schema_user.befor_time  # type: ignore
+    model_user.email_permission = schema_user.email_permission  # type: ignore
     model_user.browser_permission = schema_user.browser_permission
     model_user.push_permission = schema_user.push_permission
     model_user.mobile_permission = schema_user.mobile_permission
