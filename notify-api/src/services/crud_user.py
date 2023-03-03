@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from models import user_model, user_schema
-from sqlalchemy import UUID
+from uuid import UUID
 
 
 def get_model_user_from_schema(

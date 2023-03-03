@@ -95,4 +95,3 @@ def delete_user(
     if not db_user:
         raise HTTPException(status_code=400, detail=messages.USER_NOT_FOUND)
     crud_user.delete_user(db, user_id)
-    return {'detail': messages.USER_DELETED}, HTTPStatus.OK

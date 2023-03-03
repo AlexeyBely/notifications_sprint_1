@@ -36,6 +36,8 @@ async def add_task(
     users = task.users
     logger.info(f'template {template} <{users}>')
     films = await movie_service.read_info_films()
+    if films is None:
+        return 
     var_films = collect_film_variables(films)
     info_users = await auth_service.read_info_users(users)
     if info_users is None:
