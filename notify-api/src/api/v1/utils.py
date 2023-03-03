@@ -6,7 +6,7 @@ def collect_user_variables(user_id: str, info_users: dict) -> dict | None:
     return info_users[user_id]
 
 
-def collect_film_variables(info_films: dict) -> dict | None:
+def collect_film_variables(info_films: list) -> dict | None:
     """Collect films variables into a single dictionary."""
 
     film_var = {}
