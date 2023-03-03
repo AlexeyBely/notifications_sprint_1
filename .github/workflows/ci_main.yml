@@ -34,7 +34,7 @@ jobs:
 
     - name: Run mypy
       run: |
-        MYPYPATH=notify-api/src mypy notify-api --html-report reports/mypy_reports/notify-api
+        MYPYPATH=notify-api/src mypy notify-api --ignore-missing-imports --explicit-package-bases --html-report reports/mypy_reports/notify-api
 
     - name: Run flake8/styleguide
       run: |

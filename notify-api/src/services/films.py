@@ -10,7 +10,7 @@ class MovieFilms():
     def __init__(self):
         pass
 
-    async def read_info_films(self) -> dict | None:
+    async def read_info_films(self) -> list | None:
         """Reading and organizing films."""
         movie_films = await self._read_movie_films()
         return movie_films        
@@ -38,9 +38,6 @@ class MovieFilms():
                     'rating': data_film['imdb_rating'],
                 }    
                 film_info.append(info)
-
-            
-
         return film_info 
     
 
