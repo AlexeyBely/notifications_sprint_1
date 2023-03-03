@@ -17,10 +17,10 @@ class SendGrid():
     def send_email(self, to_email: str, subject: str, content: str) -> bool:
         """Send email. Return true when a successful result."""
         message = Mail(
-            from_email = self.from_email,
-            to_emails = to_email,
-            subject = subject,
-            html_content = content
+            from_email=self.from_email,
+            to_emails=to_email,
+            subject=subject,
+            html_content=content
         )
         try:
             sg = SendGridAPIClient(settings.sendgrid_api_key)
@@ -39,4 +39,3 @@ sendgrid_sender = SendGrid()
 
 def get_sendgrid():
     return sendgrid_sender
-            

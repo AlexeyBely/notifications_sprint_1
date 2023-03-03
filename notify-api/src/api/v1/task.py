@@ -36,16 +36,16 @@ async def add_task(
     users = task.users
     logger.info(f'template {template} <{users}>')
     films = await movie_service.read_info_films()
+    if films is None:
+        return 
     var_films = collect_film_variables(films)
-    info_users = await auth_service.read_info_users(users)    
-    for user_id in info_users:
-        var_user = collect_user_variables(user_id, info_users)
+    info_users = await auth_service.read_info_users(users)
+    if info_users is None:
+        return    
+    for user_id in info_users:  # type: ignore
+        var_user = collect_user_variables(str(user_id), info_users)
         all_var = var_user | var_films
         db_user = crud_user.get_user(db, user_id)
         if db_user is not None:
             if db_user.email_permission is True:
                 send_email.delay(template, all_var)
-                
-
-    
-

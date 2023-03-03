@@ -52,7 +52,8 @@ def get_user(
     user_id = uuid.UUID(token_data.user)
     db_user = crud_user.get_user(db, user_id)
     if not db_user:
-        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail=messages.USER_NOT_FOUND)
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND,
+                            detail=messages.USER_NOT_FOUND)
     return db_user
 
 
@@ -95,4 +96,3 @@ def delete_user(
     if not db_user:
         raise HTTPException(status_code=400, detail=messages.USER_NOT_FOUND)
     crud_user.delete_user(db, user_id)
-    return {'detail': messages.USER_DELETED}, HTTPStatus.OK

@@ -4,7 +4,6 @@ from core.config import settings
 from fastapi import FastAPI, Request
 from fastapi.responses import ORJSONResponse
 
-import uvicorn
 
 app = FastAPI(
     title=f'Сервис {settings.project_name}',
@@ -18,11 +17,3 @@ app = FastAPI(
 
 app.include_router(user.router, prefix='/notify/api/v1/user', tags=['user'])
 app.include_router(task.router, prefix='/notify/api/v1/task', tags=['task'])
-
-
-
-
-#if __name__ == '__main__':
-#    uvicorn.run(app, host='0.0.0.0', port=8999)
-
-

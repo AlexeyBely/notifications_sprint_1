@@ -20,8 +20,8 @@ def send_email(template_name: str, vars: dict):
     logger.info(f'result {output}')
     service_email: SendGrid = get_sendgrid()
     result = service_email.send_email(
-        to_email = vars['user_email'],
-        subject = 'news from movies service',
-        content = output  
+        to_email=vars['user_email'],
+        subject='news from movies service',
+        content=output  
     )    
     logger.info(f'result {result}')

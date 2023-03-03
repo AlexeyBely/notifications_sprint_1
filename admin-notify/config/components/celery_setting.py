@@ -1,6 +1,5 @@
 from config.components.env_setting import env_settings
 
-
 # Celery Configuration Options
 CELERY_ENABLE_UTC = True
 CELERY_TIMEZONE = env_settings.admin_timezone

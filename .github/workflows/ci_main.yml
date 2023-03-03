@@ -26,19 +26,25 @@ jobs:
         python -m pip install --upgrade pip
         pip install lxml types-requests mypy flake8 wemake-python-styleguide flake8-html
         pip install -r notify-api/requirements.txt
+        pip install -r admin-notify/requirements.txt
+        pip install pre-commit
 
     - name: Create report directories
       run: |
         mkdir -p reports/mypy_reports/notify-api
+        mkdir -p reports/mypy_reports/admin-notify
         mkdir -p reports/styleguide_reports/notify-api
+        mkdir -p reports/styleguide_reports/admin-notify
 
     - name: Run mypy
       run: |
-        MYPYPATH=notify-api/src mypy notify-api --explicit-package-bases --html-report reports/mypy_reports/notify-api
+        MYPYPATH=notify-api/src mypy notify-api --ignore-missing-imports --explicit-package-bases --html-report reports/mypy_reports/notify-api
+        mypy admin-notify --ignore-missing-imports --html-report reports/mypy_reports/admin-notify
 
     - name: Run flake8/styleguide
       run: |
         flake8 notify-api --config=setup.cfg --exit-zero --format=html --htmldir=reports/styleguide_reports/notify-api
+        flake8 admin-notify --config=setup.cfg --exit-zero --format=html --htmldir=reports/styleguide_reports/admin-notify
         
     - name: Upload reports
       uses: actions/upload-artifact@v3
