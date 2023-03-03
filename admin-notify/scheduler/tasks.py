@@ -81,4 +81,3 @@ def send_delayed_massege(*args, **kwargs):
     sending_user_ids, not_sending_user_ids = sorting_delayed_users_for_timezones(args)
     user_ids_to_notify_service(kwargs['template'], kwargs['name_task'], 
                                sending_user_ids, not_sending_user_ids)
-

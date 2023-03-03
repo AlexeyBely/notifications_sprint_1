@@ -27,6 +27,7 @@ jobs:
         pip install lxml types-requests mypy flake8 wemake-python-styleguide flake8-html
         pip install -r notify-api/requirements.txt
         pip install -r admin-notify/requirements.txt
+        pip install pre-commit
 
     - name: Create report directories
       run: |
