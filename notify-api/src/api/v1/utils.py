@@ -1,8 +1,6 @@
 def collect_user_variables(user_id: str, info_users: dict) -> dict:
     """Collect user variables into a single dictionary."""
 
-    if user_id not in info_users:
-        return None
     return info_users[user_id]
 
 
