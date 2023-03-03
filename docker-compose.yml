@@ -17,7 +17,6 @@ services:
       - ./deploy/nginx/site.conf:/etc/nginx/conf.d/site.conf:ro
       - /tmp/logs/nginx/:/var/log/nginx/
       - static:/app/static
-    #  - media:/app/media
     ports:
       - "80:80"
       - "8000:80"
