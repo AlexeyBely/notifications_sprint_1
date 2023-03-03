@@ -15,7 +15,7 @@ class BaseNotifyService(ABC):
         
         return False if not fault.
         """
-        pass
+        return False
 
 
 class DebugNotifyService(BaseNotifyService):
@@ -23,6 +23,7 @@ class DebugNotifyService(BaseNotifyService):
     def send_user_ids_to_notify(self, template: str, user_ids: list) -> bool:
         logger.info(f'{len(user_ids)} users were sent to the notification service')
         logger.info(f'<sending_user_ids>  {template}: {user_ids}')
+        return False
 
 
 class ApiNotifyService(BaseNotifyService):
