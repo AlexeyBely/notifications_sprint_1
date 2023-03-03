@@ -19,7 +19,7 @@ class EnvSettings(BaseSettings):
     schedule_delay_min: int = 1
     notify_api_port: int = 8001
     notify_api_host: str = '127.0.0.1'
-    notify_api_url: str | None = None
+    notify_api_url: str = 'http://127.0.0.1:8001/notify/api/v1/task/'
     notify_api_timeout: int = 5
 
     @root_validator

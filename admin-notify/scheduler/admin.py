@@ -45,7 +45,6 @@ class UserAdmin(admin.ModelAdmin):
 
     def get_groups(self, obj):
         return ','.join([group.name for group in obj.groups.all()])
-    get_groups.short_description = _('groups')
 
 
 @admin.register(GroupPeriodicTask)
