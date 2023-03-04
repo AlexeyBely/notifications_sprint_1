@@ -6,7 +6,7 @@
 - ;
 - Исследование хранилища mongoDB в каталоге db/research_mongo;
 
-![Сжема сервиса нотификации](https://github.com/AlexeyBely/notifications_sprint_1/arch_schemes/notify_system_shema.png)
+![Сжема сервиса нотификации](./arch_schemes/notify_system_shema.png)
 
 ## Состав проекта
 
