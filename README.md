@@ -28,7 +28,7 @@
 
 ### Админ-панель admin-notify
     
-![Админ-панель](./arch_schemes/admin-panel.png)
+![Админ-панель](./arch_schemes/admin_panel.png)
 
 ### Использованные технологии   
     
