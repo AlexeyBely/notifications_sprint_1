@@ -33,8 +33,6 @@ services:
       POSTGRES_DB: "${NOTIFY_POSTGRES_DB}"
       POSTGRES_USER: "${NOTIFY_POSTGRES_USER}"
       POSTGRES_PASSWORD: "${NOTIFY_POSTGRES_PASSWORD}"
-    ports:
-      - "5432:5432"
     volumes:
       - ./deploy/psql/:/docker-entrypoint-initdb.d/
 
@@ -91,8 +89,6 @@ services:
   redis:
     image: redis:latest
     container_name: ${SCHEDULER_BROKER_REDIS_HOST}
-    ports:
-      - "6379:6379"
 
   notify-api:
     build: ./notify-api
@@ -112,8 +108,6 @@ services:
     container_name: ${NOTIFY_RABBITMQ_HOST}
     env_file:
       - ./.env
-    ports:
-      - "5672:5672"
 
   notify-worker:
     image: notify_api:1.0
@@ -129,6 +123,27 @@ services:
     depends_on:
       - rabbitmq
       - notify-api
+
+  flower-notify:
+    image: totem/celery-flower-docker:latest
+    container_name: ${FLOWER_NOTIFY_HOST}
+    environment:
+      AMQP_USERNAME: "${RABBITMQ_DEFAULT_USER}"
+      AMQP_PASSWORD: "${RABBITMQ_DEFAULT_PASS}"
+      AMQP_HOST: "${NOTIFY_RABBITMQ_HOST}"
+      AMQP_PORT: "${NOTIFY_RABBITMQ_PORT}"
+      AMQP_ADMIN_USERNAME: "${RABBITMQ_DEFAULT_USER}"
+      AMQP_ADMIN_PASSWORD: "${RABBITMQ_DEFAULT_PASS}"
+      AMQP_ADMIN_HOST: "${NOTIFY_RABBITMQ_HOST}"
+      AMQP_ADMIN_PORT: "${NOTIFY_RABBITMQ_PORT}"
+      USERNAME: "${FLOWER_USERNAME}"
+      PASSWORD: "${FLOWER_PASSWORD}"
+    depends_on:
+      - rabbitmq
+      - notify-api
+      - notify-worker
+    ports:
+      - "5555:5555"
 
 
 networks:
