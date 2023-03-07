@@ -7,6 +7,6 @@ from models.user_model import User
 
 async def get_user(session: Session, user_id: UUID):
     """Get user information."""
-    result = await session.execute(select(User).order_by(User.id))
+    result = await session.execute(select(User).order_by(User.id))  # type: ignore
     user = result.scalars().first()
     return user

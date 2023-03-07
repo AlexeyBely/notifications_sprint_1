@@ -21,9 +21,9 @@ def send_email(template_name: str, vars: dict):
     template = env.get_template(f'{template_name}')
     output = template.render(**vars)
     if settings.mailhog_enable is not True:
-        service_email: BaseServiceEmail = get_sendgrid()
+        service_email = get_sendgrid()
     else:
-        service_email: BaseServiceEmail = get_mailhog()
+        service_email = get_mailhog()
     result = service_email.send_email(
         to_email=vars['user_email'],
         subject='news from movies service',
