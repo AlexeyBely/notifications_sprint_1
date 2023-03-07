@@ -21,7 +21,7 @@ class MailHog(BaseServiceEmail):
         message += f'\nTo: <{to_email}>'
         message += f'\nSubject: {subject}\n'
         message += f'\n{content}'
-        receivers = [to_email,]
+        receivers = [to_email, ]
         try:
             smtp_client = smtplib.SMTP(
                 host=settings.mailhog_host,
