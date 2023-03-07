@@ -2,7 +2,7 @@ import aiohttp
 from core.config import settings
 
 
-class AuthUsers():
+class AuthUsers:
     """Read user information from auth."""
 
     def __init__(self):

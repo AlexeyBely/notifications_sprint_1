@@ -8,8 +8,8 @@ from services.auth import get_auth_users_service, AuthUsers
 from services.films import get_movie_films_service, MovieFilms
 from api.v1.utils import collect_film_variables, collect_user_variables
 from tasks.email import send_email
-from services import crud_user
-from db.dependency import get_db
+from services import execute_user
+from db.dependency import get_db_async
 
 
 logger = logging.getLogger('')
@@ -29,7 +29,7 @@ async def add_task(
     task: Task = Body(...),
     auth_service: AuthUsers = Depends(get_auth_users_service),
     movie_service: MovieFilms = Depends(get_movie_films_service),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db_async),
 ) -> None:
     """Add new task."""
     template = task.template
@@ -45,7 +45,7 @@ async def add_task(
     for user_id in info_users:  # type: ignore
         var_user = collect_user_variables(str(user_id), info_users)
         all_var = var_user | var_films
-        db_user = crud_user.get_user(db, user_id)
+        db_user = await execute_user.get_user(db, user_id)
         if db_user is not None:
             if db_user.email_permission is True:
                 send_email.delay(template, all_var)

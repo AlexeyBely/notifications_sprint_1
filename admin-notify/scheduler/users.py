@@ -14,7 +14,7 @@ def check_send_to_user(user: User) -> bool:
     return False
 
 
-def sorting_users_for_timezones(name_groop: str | None = None) -> tuple:
+def sorting_users_for_timezones(name_group: str | None = None) -> tuple:
     """Sorts users by allowed posting time.
     
     Returns a tuple of lists of user ids with permission
@@ -22,10 +22,10 @@ def sorting_users_for_timezones(name_groop: str | None = None) -> tuple:
     """
     sending = []
     not_sending = []
-    if name_groop is None:
+    if name_group is None:
         users = User.objects.all()
     else:
-        users = User.objects.filter(groups__name=name_groop)
+        users = User.objects.filter(groups__name=name_group)
     for user in users:
         user_id = str(user.id) 
         if check_send_to_user(user) is True:

@@ -31,7 +31,7 @@ def create_task_delayed_send(name_task: str, template: str, user_ids: list) -> N
         defaults={
             'enabled': True,
             'interval': schedule_delay,
-            'task': 'scheduler.tasks.send_delayed_massege',
+            'task': 'scheduler.tasks.send_delayed_message',
             'args': json.dumps(user_ids),
             'kwargs': json.dumps(
                 {'template': template,
@@ -61,11 +61,11 @@ def user_ids_to_notify_service(
     else:
         delayed_task = PeriodicTask.objects.filter(name=f'{name_task}_delayed')
         if delayed_task is not None:
-            delayed_task.delete()      
+            delayed_task.delete()
 
 
 @celery_app.task
-def send_group_massege(*args, **kwargs):
+def send_group_message(*args, **kwargs):
     """sends a task to send a message to each user to the notification api service."""
 
     group_sending = kwargs['group']
@@ -75,7 +75,7 @@ def send_group_massege(*args, **kwargs):
     
 
 @celery_app.task
-def send_delayed_massege(*args, **kwargs):
+def send_delayed_message(*args, **kwargs):
     """sends a task to send a delayed message to each user to the api notification."""
 
     sending_user_ids, not_sending_user_ids = sorting_delayed_users_for_timezones(args)

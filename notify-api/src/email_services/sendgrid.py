@@ -3,12 +3,13 @@ from sendgrid.helpers.mail import Mail
 import logging
 
 from core.config import settings
+from email_services.email_service_abc import BaseServiceEmail
 
 
 logger = logging.getLogger('')
 
 
-class SendGrid():
+class SendGrid(BaseServiceEmail):
     """Send email from SendGrid."""
 
     def __init__(self):
@@ -25,9 +26,6 @@ class SendGrid():
         try:
             sg = SendGridAPIClient(settings.sendgrid_api_key)
             response = sg.send(message)
-            logger.info(f'status_code {response.status_code}')
-            logger.info(f'body {response.body}')
-            logger.info(f'headers {response.headers}')
             return True
         except Exception as e:
             logger.info(f'Exception {str(e)}')

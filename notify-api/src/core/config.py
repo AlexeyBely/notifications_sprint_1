@@ -22,13 +22,16 @@ class ApiSettings(BaseSettings):
     auth_login_email: str = 'superuser@ex.com'
     auth_login_password: str = 'superUserSuperPassword'
     api_films_url: str = 'http://127.0.0.1:9000/api/v1/films/'
-    rabbitmq_default_user: str
-    rabbitmq_default_pass: str
-    rabbitmq_default_vhost: str
-    notify_rabbitmq_host: str
-    notify_rabbitmq_port: int
-    sendgrid_api_key: str
-    notify_from_mail: str
+    rabbitmq_default_user: str = 'guest'
+    rabbitmq_default_pass: str = 'guest'
+    rabbitmq_default_vhost: str = ''
+    notify_rabbitmq_host: str = '127.0.0.1'
+    notify_rabbitmq_port: int = 5672
+    sendgrid_api_key: str = 'you key'
+    notify_from_mail: str = 'movies'
+    mailhog_host: str = '127.0.0.1'
+    mailhog_port: int = 1025
+    mailhog_enable: bool = True
 
 
 settings = ApiSettings()
