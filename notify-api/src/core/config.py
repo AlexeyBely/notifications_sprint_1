@@ -32,6 +32,8 @@ class ApiSettings(BaseSettings):
     mailhog_host: str = '127.0.0.1'
     mailhog_port: int = 1025
     mailhog_enable: bool = True
+    billing_template_name: str = 'BillingTemplate'
+    notify_grpc_port: int = 50051
 
 
 settings = ApiSettings()

@@ -1,5 +1,6 @@
 import os
 import logging
+import requests
 from jinja2 import Environment, FileSystemLoader
 
 from app_celery import app
@@ -30,3 +31,19 @@ def send_email(template_name: str, vars: dict):
         content=output  
     )    
     logger.info(f'result {result}')
+
+
+@app.task
+def send_message_from_billing(template_num: int, user_id: str, vars: dict):
+    url = f'{settings.auth_users_url}{user_id}/'
+    user = requests.get(url).json()
+    info = {
+        'user_email': user['email'],
+        'user_name': user['full_name'], 
+    }
+    all_vars = vars | info    
+    send_email.delay(
+        f'{settings.billing_template_name}{template_num}.txt',
+        all_vars
+    )
+

@@ -15,6 +15,8 @@ ALLOWED_HOSTS = [
     'admin-notify',
 ]
 
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:83', 'http://127.0.0.1:8003']
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

@@ -18,8 +18,8 @@ services:
       - /tmp/logs/nginx/:/var/log/nginx/
       - static:/app/static
     ports:
-      - "80:80"
-      - "8000:80"
+      - "83:80"
+      - "8003:80"
     depends_on:
       - admin-notify
 
@@ -150,6 +150,17 @@ services:
     container_name: ${MAILHOG_HOST}
     ports:
       - "8025:8025"
+
+  notify-grpc:
+    image: notify_api:1.0
+    container_name: ${NOTIFY_GRPC_HOST}
+    depends_on:
+      - rabbitmq
+      - notify-worker
+    entrypoint: >
+      sh -c "python grpc_server.py"
+    env_file:
+      - ./.env
 
 networks:
   default:
